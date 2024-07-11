@@ -88,7 +88,7 @@ export default function Home() {
               animate="animate"
               exit="exit"
               variants={transitionDirection}>
-              <div className="text-neutral-400">Nothing to see here yet...</div>
+              <div className="text-neutral-400">No sales at this moment...</div>
             </motion.div>
           )}
           {position === buttons[2] && (
