@@ -9,7 +9,7 @@ import Image from "next/image"
 
 let spotList = [
     {
-        image: "/images/profile.jpg",
+        image: "/images/centralPark.png",
         name: "Central Park",
         distance: "7",
         numOfPosts: "6",
@@ -17,7 +17,7 @@ let spotList = [
         safetyRating: "80",
     },
     {
-        image: "/images/profile.jpg",
+        image: "/images/roseBowl.png",
         name: "Rose Bowl Stadium",
         distance: "5",
         numOfPosts: "3",
@@ -25,24 +25,24 @@ let spotList = [
         safetyRating: "20"
     },
     {
-        image: "/images/profile.jpg",
-        name: "123 Sad Rd.",
+        image: "/images/1111.png",
+        name: "1111 South Arroyo",
         distance: "7",
         numOfPosts: "20",
         star: "4.5",
         safetyRating: "65"
     },
     {
-        image: "/images/profile.jpg",
-        name: "456 Happy St.",
+        image: "/images/950.png",
+        name: "950",
         distance: "11",
         numOfPosts: "1",
         star: "4.7",
         safetyRating: "95"
     },
     {
-        image: "/images/profile.jpg",
-        name: "456 Happy St.",
+        image: "/images/870.png",
+        name: "123 Sad Rd.",
         distance: "11",
         numOfPosts: "1",
         star: "4.7",
@@ -91,6 +91,7 @@ export default function Flight() {
         if (id != null) {
         setFocused(true);
         setExpanded(false)
+        scrollableContent.current.scrollTop = 0;
         } else {
         setFocused(false);
         }

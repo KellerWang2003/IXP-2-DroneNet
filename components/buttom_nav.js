@@ -31,7 +31,7 @@ export default function Nav() {
     }
 
     return (
-        <div className="fixed bottom-0 w-full bg-BG text-textColor flex justify-between pt-1.5">
+        <div className="fixed w-full bottom-0 bg-BG text-textColor flex justify-between pt-1.5">
             <NavButton name="Flight" SvgIcon={flightSVG} path='/flight' />
             <NavButton name="Community" SvgIcon={communitySVG} path='/'/>
             <NavButton name="Profile" SvgIcon={profileSVG} path='/profile'/>

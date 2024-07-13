@@ -11,13 +11,13 @@ export default function PostList() {
     {
       profile: "/images/profile.jpg",
       name: "Hallo",
-      content: "/images/test.png",
+      content: "/images/postImg1.png",
       text: "Hallo!!! My name is Hallo!"
     },
     {
       profile: "/images/profile.jpg",
       name: "Hallo",
-      content: "/images/test.png",
+      content: "/images/postImg2.png",
       text: "Hallo!!! My name is Hallo!"
     },
     {

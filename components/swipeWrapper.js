@@ -1,33 +1,53 @@
 import { useEffect, useState } from "react";
 
 export default function SwipeWrapper({ children, expanded, upAction, downAction, scrollPosition }) {
-    const [touchStartY, setTouchStartY] = useState(0);
-    const [touchEndY, setTouchEndY] = useState(0);
+    const [startY, setStartY] = useState(0);
+    const [endY, setEndY] = useState(0);
+    const [isMouseDown, setIsMouseDown] = useState(false);
 
     useEffect(() => {
         const handleGesture = () => {
-            if (!expanded && touchStartY - touchEndY > 50) { // Detects swipe up
+            if (!expanded && startY - endY > 50) { // Detects swipe up
                 upAction && upAction();
-            } else if (!scrollPosition && expanded && touchEndY - touchStartY > 50) { // Detects swipe down
+            } else if (!scrollPosition && expanded && endY - startY > 50) { // Detects swipe down
                 downAction && downAction();
             }
         };
 
         handleGesture();
-    }, [touchEndY, expanded]);
+    }, [endY, expanded]);
 
     const handleTouchStart = (event) => {
-        setTouchStartY(event.targetTouches[0].clientY);
+        setStartY(event.targetTouches[0].clientY);
     };
 
     const handleTouchEnd = (event) => {
-        setTouchEndY(event.changedTouches[0].clientY);
+        setEndY(event.changedTouches[0].clientY);
+    };
+
+    const handleMouseDown = (event) => {
+        setIsMouseDown(true);
+        setStartY(event.clientY);
+    };
+
+    const handleMouseMove = (event) => {
+        if (isMouseDown) {
+            setEndY(event.clientY);
+        }
+    };
+
+    const handleMouseUp = () => {
+        setIsMouseDown(false);
     };
 
     return (
-        <div className="h-full"
+        <div
+            className="h-full"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
         >
             {children}
         </div>
