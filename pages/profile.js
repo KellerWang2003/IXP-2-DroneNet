@@ -18,9 +18,9 @@ export default function Flight() {
     const handleClick = (buttonName) => {
         const currentIndex = buttons.indexOf(position);
         const newIndex = buttons.indexOf(buttonName);
-        setDirection(newIndex > currentIndex ? 1 : -1);
-        console.log(currentIndex, newIndex, direction);
+        setDirection(newIndex > currentIndex ? 1 : 0);
         setPosition(buttonName);
+        console.log(direction)
     };
 
     let sliderLeft;
@@ -32,29 +32,29 @@ export default function Flight() {
         sliderLeft = '83.3%';
     }
 
-    const variant = {
-        initial: { x: "100%" },
-        animate: { 
-            x: 0, 
+    const transitionDirection = {
+        initial: (direction) => ({
+            x: direction === 1 ? '100%' : '-100%',
             transition: {
                 type: "tween",
-                duration: 0.2
+                duration: .2
             }
-        },
-    };
-
-    const variantReversed = {
-        initial: { x: "-100%" },
-        animate: { 
-            x: 0, 
+        }),
+        animate:  () => ({
+            x: 0,
             transition: {
                 type: "tween",
-                duration: 0.2
+                duration: .2
             }
-        },
+        }),
+        exit: (direction) => ({
+            x: direction === 1 ? '-100%' : '100%',
+            transition: {
+                type: "tween",
+                duration: .2
+            }
+        })
     };
-
-    const transitionDirection = direction === 1 ? variant : variantReversed;
 
     return (
         <main className="h-screen w-full bg-BG text-textColor">
@@ -113,39 +113,42 @@ export default function Flight() {
                         handleClick2={() => handleClick(buttons[1])}
                         handleClick3={() => handleClick(buttons[2])}
                     />
-                    <div className="py-6 relative overflow-x-hidden">
-                        <AnimatePresence>
+                    <div className="relative">
+                        <AnimatePresence initial={false} custom={direction}>
                             {position === buttons[0] && (
                                 <motion.div
                                     key="postList"
-                                    initial={isInitialLoad ? false : "initial"}
+                                    initial="initial"
                                     animate="animate"
                                     exit="exit"
+                                    custom={direction}
                                     variants={transitionDirection}
-                                    className="w-full h-fit pb-52">
-                                    <PostList />
+                                    className="w-full h-fit">
+                                    <div className="absolute top-6 pb-52">
+                                        <PostList/>
+                                    </div>
                                 </motion.div>
                             )}
                             {position === buttons[1] && (
                                 <motion.div
                                     key="gear"
-                                    initial={isInitialLoad ? false : "initial"}
+                                    initial="initial"
                                     animate="animate"
                                     exit="exit"
-                                    variants={transitionDirection}
-                                    className="w-full h-full">
-                                    <Gear />
+                                    custom={direction}
+                                    variants={transitionDirection}>
+                                    <div className="absolute top-6">hallo</div>
                                 </motion.div>
                             )}
                             {position === buttons[2] && (
                                 <motion.div
                                     key="planList"
-                                    initial={isInitialLoad ? false : "initial"}
+                                    initial="initial"
                                     animate="animate"
                                     exit="exit"
-                                    variants={transitionDirection}
-                                    className="w-full h-full">
-                                    <Gear />
+                                    custom={direction}
+                                    variants={transitionDirection}>
+                                    <div className="absolute top-6">hallo</div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
