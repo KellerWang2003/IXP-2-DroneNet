@@ -5,7 +5,7 @@ import POIFocused from "@/components/poiFocused"
 import Spot from "@/components/spot"
 import { useState, useEffect, useRef } from "react"
 import SwipeWrapper from "@/components/swipeWrapper"
-import Image from "next/image"
+import MapComponent from "./map"
 
 let spotList = [
     {
@@ -103,15 +103,8 @@ export default function Flight() {
 
     return (
         <>
-            <div onClick={unfocus} className="fixed no-scrollbar overflow-auto top-0 h-full w-full bg-[#272727] z-0">
-                <div className="w-[1500px]">
-                    <Image
-                    src="/images/map.png"
-                    width={1500}
-                    height={1500}
-                    alt="map"
-                    />
-                </div>
+            <div onClick={unfocus} className="fixed no-scrollbar top-0 h-full w-full z-0">
+                <MapComponent/>
             </div>
             <main className={`pointer-events-none relative h-full flex flex-col ${expanded && focused ? "justify-end" : "justify-between"}`}>
                 <div className={`${expanded && focused ? "hidden" : ""} pointer-events-auto px-4 grid gap-2 pt-6`}>
