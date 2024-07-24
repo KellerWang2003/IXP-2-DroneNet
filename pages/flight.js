@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { IdContext } from "./idContext";
+import { IdContext } from "../context/idContext";
 import Search from "@/components/search";
 import Weather from "@/components/weather";
 import Create from "@/components/create";

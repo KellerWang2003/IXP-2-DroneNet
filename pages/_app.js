@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import Nav from "@/components/buttom_nav";
-import { IdProvider } from "./idContext";
+import { IdProvider } from "../context/idContext";
 
 export default function App({ Component, pageProps }) {
   return (
