@@ -1,6 +1,7 @@
 import Gear from "@/components/gear"
 import Location from "@/components/location"
 import Post from "@/components/post"
+import { motion, AnimatePresence } from "framer-motion"
 import Link from "next/link"
 import { useState } from "react"
 
@@ -94,8 +95,32 @@ function SurvayPage() {
 export default function CreatePost() {
     const [progress, setProgress] = useState(0);
 
+    const transitionDirection = {
+        initial: (direction) => ({
+            x: direction === 1 ? '100%' : '-100%',
+            transition: {
+                type: "tween",
+                duration: .2
+            }
+        }),
+        animate:  () => ({
+            x: 0,
+            transition: {
+                type: "tween",
+                duration: .2
+            }
+        }),
+        exit: (direction) => ({
+            x: direction === 1 ? '-100%' : '100%',
+            transition: {
+                type: "tween",
+                duration: .2
+            }
+        })
+    };
+
     return (
-        <main className="bg-BG h-full flex flex-col z-10 relative overflow-auto py-6">
+        <main className="bg-BG h-full flex flex-col gap-4 z-10 relative overflow-auto py-6 no-scrollbar">
             <div className="bg-BG w-full h-8 justify-between items-start inline-flex px-6">
                 {progress ? (
                 <div onClick={() => setProgress(0)} className="w-8 h-8" href="/flight">
@@ -122,10 +147,50 @@ export default function CreatePost() {
                     )
                 }
             </div>
-            <main className="w-full h-full relative">
-                <div className={`absolute w-full flex overflow-x-visible ${progress ? "translate-x-[-100vw]" : ""} transition-all`}>
-                    <UploadPage/>
-                    <SurvayPage/>
+            <main className="w-full h-full relative no-scrollbar">
+                <div className={`w-full`}>
+                    <AnimatePresence initial={false}>
+                    {progress && (
+                        <motion.div
+                        key="survey"
+                        initial={
+                            { x: "100%" }
+                        }
+                        animate={
+                            { x: 0 }
+                        }
+                        exit={
+                            { x: "100%" }
+                        }
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="w-full h-fit"
+                        >
+                            <div className="absolute w-full">
+                                <SurvayPage/>
+                            </div>
+                        </motion.div>
+                    )}
+                    {!progress && (
+                        <motion.div
+                        key="upload"
+                        initial={
+                            { x: "-100%" }
+                        }
+                        animate={
+                            { x: 0 }
+                        }
+                        exit={
+                            { x: "-100%" }
+                        }
+                        transition={{ type: "tween", duration: 0.2 }}
+                        className="w-full h-fit"
+                        >
+                            <div className="absolute w-full">
+                                <UploadPage/>
+                            </div>
+                        </motion.div>
+                    )}
+                    </AnimatePresence>
                 </div>
             </main>
         </main>

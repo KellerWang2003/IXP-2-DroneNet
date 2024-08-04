@@ -10,69 +10,13 @@ import POI from '@/components/poi';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { Marker } from '@googlemaps/markerclusterer';
 
-let spotList = [
-    {
-        key: "centralPark",
-        image: "/images/centralPark.png",
-        name: "Central Park",
-        distance: "7",
-        numOfPosts: "6",
-        star: "4.7",
-        safetyRating: "80",
-        location: { lat: 34.1419588, lng: -118.1497474 }
-    },
-    {
-        key: "roseBowlStadium",
-        image: "/images/roseBowl.png",
-        name: "Rose Bowl Stadium",
-        distance: "5",
-        numOfPosts: "3",
-        star: "3.5",
-        safetyRating: "20",
-        location: { lat: 34.1613, lng: -118.1676 }
-    },
-    {
-        key: "1111SouthArroyo",
-        image: "/images/1111.png",
-        name: "1111 South Arroyo",
-        distance: "7",
-        numOfPosts: "20",
-        star: "4.5",
-        safetyRating: "65",
-        location: { lat: 34.128190, lng: -118.147710 }
-    },
-    {
-        key: "870",
-        image: "/images/950.png",
-        name: "870",
-        distance: "11",
-        numOfPosts: "1",
-        star: "4.7",
-        safetyRating: "95",
-        location: { lat: 34.1315032, lng: -118.148362 }
-    },
-    {
-        key: "1700LidaStreet",
-        image: "/images/870.png",
-        name: "Artcenter Hillside Campus",
-        distance: "11",
-        numOfPosts: "1",
-        star: "4.7",
-        safetyRating: "95",
-        location: { lat: 34.1786, lng: -118.1966 }
-    },
-    {
-        key: "456HappyStreet",
-        image: "/images/profile.jpg",
-        name: "456 Happy St.",
-        distance: "11",
-        numOfPosts: "1",
-        star: "4.7",
-        safetyRating: "95"
-    },
-];
+// Function to convert latLng data
+const convertLatLng = ({ latitude, longitude }) => ({
+  lat: latitude,
+  lng: longitude
+});
 
-const PoiMarkers = ({ spotList }) => {
+const PoiMarkers = ({ spots }) => {
   const map = useMap();
   const [markers, setMarkers] = useState({});
   const clusterer = useRef(null);
@@ -88,9 +32,9 @@ const PoiMarkers = ({ spotList }) => {
     map.panTo(ev.latLng);
 
     // After setting the center, use panBy to offset the center upwards
-      const OFFSET_X = 0;  // Adjust this value to control horizontal offset (pixels)
-      const OFFSET_Y = 120;  // Adjust this value to control vertical offset (pixels)
-      map.panBy(OFFSET_X, OFFSET_Y);
+    const OFFSET_X = 0;  // Adjust this value to control horizontal offset (pixels)
+    const OFFSET_Y = 120;  // Adjust this value to control vertical offset (pixels)
+    map.panBy(OFFSET_X, OFFSET_Y);
 
     setId(key); // Set the ID to the key of the clicked marker
     console.log('id set to:', key);
@@ -128,13 +72,13 @@ const PoiMarkers = ({ spotList }) => {
 
   return (
     <>
-      {spotList.map((location) => (
+      {spots.map((location) => (
         <AdvancedMarker
-          key={location.key}
-          position={location.location}
-          ref={marker => setMarkerRef(marker, location.key)}
+          key={location.id}
+          position={convertLatLng(location.latLng)}
+          ref={marker => setMarkerRef(marker, location.id)}
           clickable={true}
-          onClick={(ev) => handleClick(ev, location.key)} // Pass the key to the handler
+          onClick={(ev) => handleClick(ev, location.id)} // Pass the id to the handler
         >
           <POI {...location} />
         </AdvancedMarker>
@@ -148,6 +92,45 @@ const GoogleMapComponent = () => {
     disableDefaultUI: true, // Disable all default UI controls
   };
 
+  //connecting with database
+  const [spots, setSpots] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        "https://us-west-2.cdn.hygraph.com/content/clz60dz7202xp07wdr4rf5fzb/master",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: `query Spot {
+              spots {
+                id
+                image {
+                  url
+                }
+                safetyRating
+                latLng {
+                  latitude
+                  longitude
+                }
+              }
+            }`,
+          }),
+        }
+      );
+      const json = await response.json();
+      const convertedSpots = json.data.spots.map(spot => ({
+        ...spot,
+        location: convertLatLng(spot.latLng)
+      }));
+      setSpots(convertedSpots);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <APIProvider apiKey="AIzaSyBwA7pyze0XndTMMLOhspsQdFq8Xj52_eY" onLoad={() => console.log('Maps API has loaded.')}>
       <div className='w-full h-full focus:outline-none'>
@@ -157,7 +140,7 @@ const GoogleMapComponent = () => {
           defaultCenter={{ lat: 34.1724529, lng: -118.1941781 }}
           options={mapOptions} // Apply custom map options here
         >
-          <PoiMarkers spotList={spotList} />
+          <PoiMarkers spots={spots} />
         </Map>
       </div>
     </APIProvider>

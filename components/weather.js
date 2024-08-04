@@ -7,7 +7,6 @@ export default function Weather() {
         .then((res) => res.json())
         .then((data) => {
             setWeather(Math.round(parseInt(data.main.temp)));
-            console.log(data)
         });
     },[])
 

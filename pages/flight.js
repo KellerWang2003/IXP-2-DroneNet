@@ -8,73 +8,49 @@ import Spot from "@/components/spot";
 import SwipeWrapper from "@/components/swipeWrapper";
 import MapComponent from "./map";
 
-let spotList = [
-    {
-        key: "centralPark",
-        image: "/images/centralPark.png",
-        name: "Central Park",
-        distance: "7",
-        numOfPosts: "6",
-        star: "4.7",
-        safetyRating: "80",
-        location: { lat: 34.1419588, lng: -118.1497474 }
-    },
-    {
-        key: "roseBowlStadium",
-        image: "/images/roseBowl.png",
-        name: "Rose Bowl Stadium",
-        distance: "5",
-        numOfPosts: "3",
-        star: "3.5",
-        safetyRating: "20",
-        location: { lat: 34.1613, lng: -118.1676 }
-    },
-    {
-        key: "1111SouthArroyo",
-        image: "/images/1111.png",
-        name: "1111 South Arroyo",
-        distance: "7",
-        numOfPosts: "20",
-        star: "4.5",
-        safetyRating: "65",
-        location: { lat: 34.128190, lng: -118.147710 }
-    },
-    {
-        key: "870",
-        image: "/images/950.png",
-        name: "870",
-        distance: "11",
-        numOfPosts: "1",
-        star: "4.7",
-        safetyRating: "95",
-        location: { lat: 34.1315032, lng: -118.148362 }
-    },
-    {
-        key: "1700LidaStreet",
-        image: "/images/870.png",
-        name: "Artcenter Hillside Campus",
-        distance: "11",
-        numOfPosts: "1",
-        star: "4.7",
-        safetyRating: "95",
-        location: { lat: 34.1786, lng: -118.1966 }
-    },
-    {
-        key: "456HappyStreet",
-        image: "/images/profile.jpg",
-        name: "456 Happy St.",
-        distance: "11",
-        numOfPosts: "1",
-        star: "4.7",
-        safetyRating: "95"
-    },
-];
-
 export default function Flight() {
   const [scrollPosition, setScrollPosition] = useState(0);
   const scrollableContent = useRef(null);
   const { id, setId } = useContext(IdContext); // Use context state
 
+  //connecting with database
+  const [spots, setSpots] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        "https://us-west-2.cdn.hygraph.com/content/clz60dz7202xp07wdr4rf5fzb/master",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: `query Spot {
+              spots {
+                id
+                name
+                image {
+                  url
+                }
+                safetyRating
+                numberOfPosts
+                star
+                latLng {
+                  distance(from: {latitude: 34.1680011, longitude: -118.1844544})
+                }
+              }
+            }`,
+          }),
+        }
+      );
+      const json = await response.json();
+      setSpots(json.data.spots);
+    };
+
+    fetchData();
+  }, []);
+
+  //expand and condense
   useEffect(() => {
     const currentElement = scrollableContent.current;
 
@@ -98,6 +74,7 @@ export default function Flight() {
     }
   }
 
+  //connecting with google map using context
   useEffect(() => {
     console.log('Context ID in Flight component:', id);
     if (id != null) {
@@ -109,7 +86,7 @@ export default function Flight() {
     }
   }, [id]);
 
-  let selectedSpot = spotList.find(spot => spot.key === id) || {};
+  let selectedSpot = spots.find(spot => spot.id === id) || {};
 
   let height = expanded ? (focused ? "h-[800px]" : "h-[670px]") : (focused ? "h-[450px]" : "h-[430px]");
 
@@ -150,9 +127,16 @@ export default function Flight() {
                     />
                   ) : (
                     <div className="flex flex-col gap-4 pb-32">
-                      {spotList && spotList.map((spot) => (
-                        <div className="px-6" key={spot.key} onClick={() => setId(spot.key)}>
-                          <Spot {...spot} />
+                      {spots && spots.map((spot) => (
+                        <div className="px-6" key={spot.id} onClick={() => setId(spot.id)}>
+                          <Spot
+                            image={spot.image[0].url}
+                            name={spot.name}
+                            distance={Math.round(spot.latLng.distance/1000)}
+                            numOfPosts={spot.numberOfPosts}
+                            star={spot.star}
+                            safetyRating={spot.safetyRating}
+                          />
                         </div>
                       ))}
                     </div>
