@@ -29,7 +29,7 @@ export default function PostList() {
   ]
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 py-6">
       {postList && postList.map( post =>
         <Post {...post}/>
       )}

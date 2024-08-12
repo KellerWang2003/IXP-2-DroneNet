@@ -19,8 +19,8 @@ export default function Post({ profile, name, content, spot, gear, text }) {
             <main>
             <Image className="rounded-xl"
                     src={content}
-                    width={342}
-                    height={342}
+                    width={300}
+                    height={300}
                     alt="content"
                     layout="responsive"
                 />

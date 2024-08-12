@@ -101,7 +101,7 @@ export default function Flight() {
           <Weather />
         </div>
         <div className={`${height} pointer-events-auto flex flex-col gap-2 overflow-hidden transition-all`}>
-          <div className={`${expanded || focused ? "hidden" : ""} flex flex-col gap-2 items-end px-4`}>
+          <div className={`${expanded || focused ? "hidden" : ""} flex flex-col gap-2 items-end px-6`}>
             <Create />
             <div className="container flex gap-2 text-textColor text-base">
               <button className="container bg-BG py-2 rounded-md">Pre-flight Checklist</button>

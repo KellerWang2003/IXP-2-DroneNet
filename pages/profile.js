@@ -61,7 +61,7 @@ export default function Flight() {
             <div className="p-6 shadow-xl shadow-black/10 z-20">
                 <h1 className="text-textColor text-2xl">Your Profile</h1>
             </div>
-            <div className="h-full w-full px-6 pt-6 flex flex-col gap-4 overflow-x-auto">
+            <div className="no-scrollbar h-full w-full px-6 pt-6 flex flex-col gap-4 overflow-x-auto">
                 <div className="flex flex-col gap-3">
                     <div className="flex justify-between items-center">
                         <div className="flex gap-4 items-center">
@@ -124,7 +124,7 @@ export default function Flight() {
                                     custom={direction}
                                     variants={transitionDirection}
                                     className="w-full h-fit">
-                                    <div className="absolute top-6 pb-52">
+                                    <div className="absolute top-6 pb-40">
                                         <PostList/>
                                     </div>
                                 </motion.div>
